@@ -5,6 +5,7 @@ from TC40 import game
 from traitors import traitors
 from traitors1 import traitors1sim
 from mole2sim import mole2
+from mole1sim import mole1
 
 app = Flask(__name__)
 
@@ -17,6 +18,7 @@ def index():
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Reality TV Simulator</title>
+            <link rel="icon" href="https://live.staticflickr.com/65535/53916787871_44fe3238e9_m.jpg" type="image/jpeg">
             <style>
                 body {
                     background-color: #2c3e50;
@@ -142,7 +144,7 @@ def index():
         </head>
         <body>
             <header>
-                <img src="https://cdn.discordapp.com/attachments/751065145073074350/1261921955456749609/image.png?ex=6694b7e7&is=66936667&hm=6e0f218179515d3cd1ed1f4e09640369b2d0bba1b1f3629ec2f60cea9b1de757&" alt="Logo">
+                <img src="https://live.staticflickr.com/65535/53916787871_44fe3238e9_m.jpg" style="width: 50px; height: 50px;" alt="X logo">
                 <h4>Created by @nathuin 
                     <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg" style="width: 14px; height: 14px;" alt="X logo">
                     <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" style="width: 16px; height: 16px;" alt="Discord Logo">
@@ -176,9 +178,13 @@ def index():
                 <div class="container">
                     <div class="button-container">
                         <h2>The Mole Seasons</h2>
+                        <form action="{{ url_for('mole1sim') }}" method="post">
+                            <button type="submit">The Mole 1</button>
+                        </form>
                         <form action="{{ url_for('mole2sim') }}" method="post">
                             <button type="submit">The Mole 2</button>
                         </form>
+                        
                     </div>
                 </div>
                 
@@ -999,6 +1005,199 @@ def mole2sim():
                     <button class="back-button">Back to Home</button>
                 </a>
                 <form action="{{ url_for('mole2sim') }}" method="post" style="display: inline;">
+                    <button class="resimulate-button" type="submit">Resimulate</button>
+                </form>
+            </footer>
+        </body>
+        </html>
+    ''', player_results=player_results, num_rounds=num_rounds, game_result_display=game_result_display)
+
+@app.route('/mole1', methods=['POST'])
+def mole1sim():
+    # Simulate the game and get the results
+    game_result, game_results, cast = mole1()
+
+    # Join the game results for display
+    game_result_display = '\n'.join(game_result)
+    
+    num_rounds = len(game_results)
+    
+    # Initialize player results
+    player_results = {player.name: [''] * num_rounds for player in cast}
+    
+    # Populate player results
+    for round_num, round_results in enumerate(game_results):
+        for player, result in round_results:
+            if player.name in player_results:
+                player_results[player.name][round_num] = result
+
+    # Sort player results by placement or any other criteria
+    sorted_player_results = sorted(
+        [(player, player_results[player.name]) for player in cast],
+        key=lambda x: x[0].placement  # Adjust based on actual sorting criteria
+    )
+    
+    player_results = {player.name: results for player, results in sorted_player_results}
+
+    return render_template_string('''
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>The Mole 2 Simulator Results</title>
+            <style>
+                body {
+                    background-color: #2c3e50;
+                    color: white;
+                    margin: 0;
+                    padding: 0;
+                    font-family: 'Roboto', sans-serif;
+                    text-shadow: 2px 2px 4px #000000;
+                }
+                header {
+                    background: linear-gradient(135deg, #1fd655, #16c43c);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 10px 20px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: calc(100% - 1px);
+                    z-index: 1000;
+                    box-sizing: border-box;
+                    font-weight: bold;
+                }
+                .header-title {
+                    font-family: 'Montserrat', sans-serif;
+                    font-weight: bold;
+                    font-size: 20px;
+                    margin: 0;
+                }
+                .center-title {
+                    text-align: center;
+                    flex-grow: 1;
+                    font-size: 25px;
+                    margin: 0;
+                    padding-left: 90px;
+                }
+                .header-buttons {
+                    display: flex;
+                    gap: 10px;
+                }
+                main {
+                    margin-top: 80px;
+                    text-align: center;
+                }
+                table {
+                    margin: 20px auto;
+                    border-collapse: collapse;
+                    width: 80%;
+                    text-align: center;
+                    font-size: 18px;
+                }
+                th, td {
+                    border: 1px solid #dddddd;
+                    padding: 10px;
+                }
+                th {
+                    background-color: #72aee6;
+                    color: white;
+                    font-size: 20px;
+                }
+                td.name-column {
+                    text-align: left;
+                    background-color: ghostwhite;
+                }
+                td {
+                    background-color: #f5f5f5; /* Very light gray */
+                }
+                .result-cell {
+                    text-align: center;
+                    font-size: 18px;
+                    text-shadow: 1px 1px 3px #000000; /* Added text shadow */
+                }
+                .back-button {
+                    background-color: darkgreen;
+                    color: white;
+                    border: orange;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                    padding: 5px 10px;
+                }
+                .resimulate-button {
+                    background-color: white;
+                    color: black;
+                    border: orange;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                    padding: 5px 10px;
+                }
+                button:hover {
+                    opacity: 0.9;
+                }
+                footer {
+                    text-align: center;
+                    margin: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <header>
+                <div class="header-title">nathsim.com</div>
+                <div class="center-title">The Mole Season 1 Simulator</div>
+                <div class="header-buttons">
+                    <a href="{{ url_for('index') }}" style="text-decoration: none;">
+                        <button class="back-button">Back to Home</button>
+                    </a>
+                    <form action="{{ url_for('mole1sim') }}" method="post" style="display: inline;">
+                        <button class="resimulate-button" type="submit">Resimulate</button>
+                    </form>
+                </div>
+            </header>
+            <main>
+                <p>{{ game_result_display | safe }}</p>
+                <h1 style="font-size: 2em; text-shadow: 1px 1px 3px #000000;">Results Chart</h1>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <tr>
+                            <th class="round-header">Round</th>
+                            {% for round_num in range(1, num_rounds + 1) %}
+                                <th class="round-header">{{ round_num }}</th>
+                            {% endfor %}
+                        </tr>
+                        {% for player_name, results in player_results.items() %}
+                            <tr>
+                                <td class="name-column">{{ player_name }}</td>
+                                {% for result in results %}
+                                    {% if result == '' %}
+                                        <td style="background-color: black;"></td>
+                                    {% else %}
+                                        <td class="result-cell" style="background-color: 
+                                            {% if result == 'WIN' %}#00ba37
+                                            {% elif result == 'ELIM' %}red
+                                            {% elif result == 'WINNER' %}blue
+                                            {% elif result == 'IN' %}white
+                                            {% elif result == 'MOLE' %}yellow
+                                            {% endif %};">
+                                            {{ result }}
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </main>
+            <footer>
+                <a href="{{ url_for('index') }}" style="text-decoration: none;">
+                    <button class="back-button">Back to Home</button>
+                </a>
+                <form action="{{ url_for('mole1sim') }}" method="post" style="display: inline;">
                     <button class="resimulate-button" type="submit">Resimulate</button>
                 </form>
             </footer>
