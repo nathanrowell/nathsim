@@ -39,7 +39,7 @@ def index():
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 10px 20px;
+                    padding: 1px 10px;
                     background-color: #1fd655;
                     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
                     position: fixed;
@@ -47,25 +47,14 @@ def index():
                     left: 0;
                     z-index: 1000;
                 }
-                header img {
-                    width: 100px;
-                    height: auto;
-                }
                 header h4 {
-                    font-size: 1.5em;
-                    margin: 0;
-                    flex-grow: 1;
-                    text-align: center;
-                }
-                header .social-icons {
-                    display: flex;
-                    align-items: center;
-                }
-                header .social-icons img {
-                    width: 20px;
-                    height: 20px;
-                    margin-left: 5px;
-                }
+                font-size: 1.5em;
+                margin: 0;
+                padding-left: 150px;
+                text-align: center;
+                font-family: 'Roboto', sans-serif; 
+            }
+                
                 .content {
                     display: flex;
                     justify-content: center;
@@ -98,7 +87,7 @@ def index():
                     background-color: #007bff;
                     color: white;
                     cursor: pointer;
-                    border-radius: 5px;
+                    border-radius: 2px;
                     transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
                     margin: 10px 0;
                     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -143,12 +132,13 @@ def index():
             </style>
         </head>
         <body>
-            <header>
-                <img src="https://live.staticflickr.com/65535/53916787871_44fe3238e9_m.jpg" style="width: 50px; height: 50px;" alt="X logo">
-                <h4>Created by @nathuin 
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg" style="width: 14px; height: 14px;" alt="X logo">
-                    <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" style="width: 16px; height: 16px;" alt="Discord Logo">
-                </h4>
+            <header style="display: flex; align-items: center; justify-content: space-between;">
+                <a href="https://x.com/nathuin" target="_blank">
+                    <img src="https://live.staticflickr.com/65535/53916787871_44fe3238e9_m.jpg" style="width: 50px; height: 50px;" alt="X logo">
+                </a>
+                <div style="flex-grow: 1; text-align: center;">
+                    <h4> NATHSIM.COM </h4>
+                </div>
                 <div class="header-buttons">
                     <button type="submit">Suggestions</button>
                     <button type="submit">Report Bugs</button>
@@ -158,7 +148,7 @@ def index():
                 <div class="container">
                     <div class="button-container">
                         <h2>Challenge Seasons</h2>
-                        <button type="submit">The Challenge 39 - Coming Soon</button>
+
                         <form action="{{ url_for('TheChallenge40') }}" method="post">
                             <button type="submit">The Challenge 40</button>
                         </form>
@@ -189,7 +179,14 @@ def index():
                 </div>
                 
             </div>
+                                  
         </body>
+        <div style="display: flex; gap: 10px;"> 
+    <a href="https://github.com/nathanrowell/nathsim" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" style="width: 30px; height: 30px;" alt="X logo">
+    </a>
+
+</div>
         </html>
     ''')
 
