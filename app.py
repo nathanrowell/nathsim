@@ -150,9 +150,6 @@ def index():
                 <div class="container">
                     <div class="button-container">
                         <h2>Challenge Seasons</h2>
-                        <form action="{{ url_for('TheChallengeCustom') }}" method="post">
-                            <button type="submit">The Challenge Custom</button>
-                        </form>
                         <form id="challengeForm" action="{{ url_for('TheChallenge40') }}" method="post">
                             <input type="hidden" name="game_output" id="game_output" value=[]>
                             <input type="hidden" name="eliminated" id="eliminated" value=[]>
@@ -200,9 +197,6 @@ def index():
         </html>
     ''')
 
-@app.route('/TheChallengeCustom', methods=['POST'])
-def TheChallengeCustom():
-    return render_template_string('''<title>The Challenge 40 Simulator Results</title>''')
 
 @app.route('/TheChallenge40', methods=['POST'])
 def TheChallenge40():
@@ -429,6 +423,22 @@ def TheChallenge40():
                     text-align: center;
                     margin: 20px;
                 }
+                .game-output-wrapper {
+                    width: 80%; /* Limit the width to 80% of the page */
+                    margin: 20px auto; /* Add margin around the container to create space outside */
+                    background-color: #003366; /* Updated dark blue background */
+                    border: 2px solid #002244; /* Darker blue border for contrast */
+                    padding: 15px; /* Add padding inside the container */
+                    box-sizing: border-box; /* Include padding and border in the element's total width */
+                    border-radius: 12px; /* Curved corners */
+                }
+
+                .game-output-text {
+                    color: white; /* Text color */
+                    font-size: 16px; /* Adjust font size as needed */
+                    margin: 0; /* Remove default margin */
+                    line-height: 1.5; /* Improve readability */
+                }
             </style>
         </head>
         <body>               
@@ -457,7 +467,9 @@ def TheChallenge40():
             </header>
             <main>
                 
-                <p>{{ game_output_display | safe }}</p>
+                <div class="game-output-wrapper">
+                    <p class="game-output-text">{{ game_output_display | safe }}</p>
+                </div>
                 <div style="overflow-x: auto;">
                     
                     
@@ -770,9 +782,17 @@ footer {
                                 }
 
                                 .game-output-content {
-                                    width: 100%; /* Ensure content takes full width of the container */
-                                    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-                                }
+    width: 80%; /* Limit the width to 80% of the page */
+    margin: 20px auto; /* Add margin around the container to create space outside */
+    background-color: #003366; /* Dark blue background */
+    border: 2px solid #002244; /* Darker blue border for contrast */
+    padding: 15px; /* Add padding inside the container */
+    box-sizing: border-box; /* Include padding and border in the element's total width */
+    border-radius: 12px; /* Curved corners */
+    color: white; /* Text color */
+    font-size: 16px; /* Adjust font size as needed */
+    line-height: 1.5; /* Improve readability */
+}
             </style>
             <script>
             // Function to check if results are empty and disable the button
