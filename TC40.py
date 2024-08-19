@@ -5,11 +5,11 @@ import random
 import colorama
 from colorama import Fore, Back, Style
 
+def convert_players_to_dict(players):
+    return [player.to_dict() for player in players]
 
 # Define the players
-
-
-def game():
+def TC40cast():
     @dataclass
     class Player:
         name: str
@@ -22,6 +22,35 @@ def game():
         eliminatedFirst: bool
         pic: str
         elimPic: str
+
+        def to_dict(self):
+            return {
+                'name': self.name,
+                'skill': self.skill,
+                'random': self.random,
+                'gender': self.gender,
+                'chart': self.chart,
+                'placement': self.placement,
+                'era': self.era,
+                'eliminatedFirst': self.eliminatedFirst,
+                'pic': self.pic,
+                'elimPic': self.elimPic
+            }
+
+        @staticmethod
+        def from_dict(data):
+            return Player(
+                name=data['name'],
+                skill=data['skill'],
+                random=data['random'],
+                gender=data['gender'],
+                chart=data['chart'],
+                placement=data['placement'],
+                era=data['era'],
+                eliminatedFirst=data['eliminatedFirst'],
+                pic=data['pic'],
+                elimPic=data['elimPic']
+            )
     player_1 = Player('Derrick', 80, 0, 'M', [], 0, 1, False, 
                   '<img src="https://live.staticflickr.com/65535/53914826951_132f681c41_m.jpg" alt="Game Image" width="120" height="120" />', 
                   '<img src="https://live.staticflickr.com/65535/53914826951_132f681c41_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
@@ -92,8 +121,8 @@ def game():
                   '<img src="https://live.staticflickr.com/65535/53913941707_6fc59b419a_m.jpg" alt="Game Image" width="120" height="120" />', 
                   '<img src="https://live.staticflickr.com/65535/53913941707_6fc59b419a_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
     player_24 = Player('Aneesa', 60, 0, 'F', [], 0, 1, False, 
-                  '<img src="https://live.staticflickr.com/65535/53913941792_91062239ed_m.jpg" alt="Game Image" width="120" height="120" />', 
-                  '<img src="https://live.staticflickr.com/65535/53913941792_91062239ed_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
+                  '<img src="https://live.staticflickr.com/65535/53913941797_c3cb8ea3ef_m.jpg" alt="Game Image" width="120" height="120" />', 
+                  '<img src="https://live.staticflickr.com/65535/53913941797_c3cb8ea3ef_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
     player_25 = Player('Tina', 60, 0, 'F', [], 0, 1, False, 
                   '<img src="https://live.staticflickr.com/65535/53915177409_4b765c2d35_m.jpg" alt="Game Image" width="120" height="120" />', 
                   '<img src="https://live.staticflickr.com/65535/53915177409_4b765c2d35_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
@@ -154,13 +183,13 @@ def game():
         male.chart = []
         male.eliminatedFirst = False
         male.placement = 0
+    return males , females
+
+def game(game_output, eliminated, game_results, males, females,week):
+    era1men = []
     count = len(females)
     count2 = count
     index3 = 0
-    eliminated = []
-    game_output = []  # Store game events to display on the website
-    game_results = []
-    era1men = []
     era2men = []
     era3men = []
     era4men = []
@@ -168,11 +197,12 @@ def game():
     era2women = []
     era3women = []
     era4women = []
-
-    week = 1
+    results_output = []
+    results_output.append("<h1>Elimination Results</h1>")
     game_output.append("<h2>")
+    
     while count2 > 4:
-        game_output.append(f"</h2><br><h2>Week {week}</h2><br><div1>")
+        game_output.append(f"</h1><br><h2>Week {week}</h1><br><div1>")
         if week == 1:  
             for i in range(count2):
                 males[i].random = random.randint(1, males[i].skill) + random.randint(1, males[i].skill)
@@ -259,13 +289,13 @@ def game():
                 males[i].random = random.randint(1, males[i].skill) + random.randint(1, males[i].skill)
                 females[i].random = random.randint(1, females[i].skill) + random.randint(1, females[i].skill)
             if era1men[4].random > era1men[oneRandom].random:
-                game_output.append(era1men[4].name + " has beat " + era1men[oneRandom].name + " in elimination<br>" + era1men[4].pic + era1men[oneRandom].elimPic + "<br>")
+                results_output.append(era1men[4].name + " has beat " + era1men[oneRandom].name + " in elimination<br>" + era1men[4].pic + era1men[oneRandom].elimPic + "<br>")
                 era1men[oneRandom].chart[0] = "OUT"
                 era1men[oneRandom].placement = 20
                 era1men[oneRandom].eliminatedFirst = True
                 eliminated.append(era1men[oneRandom])
             else:
-                game_output.append(era1men[oneRandom].name + " has beat " + era1men[4].name + " in elimination<br>" + era1men[oneRandom].pic + era1men[4].elimPic + "<br>")
+                results_output.append(era1men[oneRandom].name + " has beat " + era1men[4].name + " in elimination<br>" + era1men[oneRandom].pic + era1men[4].elimPic + "<br>")
                 era1men[4].chart[0] = "OUT"
                 era1men[4].placement = 20
                 era1men[4].eliminatedFirst = True
@@ -273,13 +303,13 @@ def game():
 
                 
             if era1women[4].random > era1women[oneRandom].random:
-                game_output.append(era1women[4].name + " has beat " + era1women[oneRandom].name + " in elimination<br>" + era1women[4].pic + era1women[oneRandom].elimPic + "<br>")
+                results_output.append(era1women[4].name + " has beat " + era1women[oneRandom].name + " in elimination<br>" + era1women[4].pic + era1women[oneRandom].elimPic + "<br>")
                 era1women[oneRandom].chart[0] = "OUT"
                 era1women[oneRandom].placement = 20
                 era1women[oneRandom].eliminatedFirst = True
                 eliminated.append(era1women[oneRandom])
             else:
-                game_output.append(era1women[oneRandom].name + " has beat " + era1women[4].name + " in elimination<br>" + era1women[oneRandom].pic + era1women[4].elimPic + "<br>")
+                results_output.append(era1women[oneRandom].name + " has beat " + era1women[4].name + " in elimination<br>" + era1women[oneRandom].pic + era1women[4].elimPic + "<br>")
                 era1women[4].chart[0] = "OUT"
                 era1women[4].placement = 20
                 era1women[4].eliminatedFirst = True
@@ -287,73 +317,73 @@ def game():
 
 
             if era2men[4].random > era2men[twoRandom].random:
-                game_output.append(era2men[4].name + " has beat " + era2men[twoRandom].name + " in elimination<br>" + era2men[4].pic + era2men[twoRandom].elimPic + "<br>")
+                results_output.append(era2men[4].name + " has beat " + era2men[twoRandom].name + " in elimination<br>" + era2men[4].pic + era2men[twoRandom].elimPic + "<br>")
                 era2men[twoRandom].chart[0] = "OUT"
                 era2men[twoRandom].placement = 20
                 era2men[twoRandom].eliminatedFirst = True
                 eliminated.append(era2men[twoRandom])
             else:
-                game_output.append(era2men[twoRandom].name + " has beat " + era2men[4].name + " in elimination<br>" + era2men[twoRandom].pic + era2men[4].elimPic + "<br>")
+                results_output.append(era2men[twoRandom].name + " has beat " + era2men[4].name + " in elimination<br>" + era2men[twoRandom].pic + era2men[4].elimPic + "<br>")
                 era2men[4].chart[0] = "OUT"
                 era2men[4].placement = 20
                 era2men[4].eliminatedFirst = True
                 eliminated.append(era2men[4])
             if era2women[4].random > era2women[twoRandom].random:
-                game_output.append(era2women[4].name + " has beat " + era2women[twoRandom].name + " in elimination<br>" + era2women[4].pic + era2women[twoRandom].elimPic + "<br>")
+                results_output.append(era2women[4].name + " has beat " + era2women[twoRandom].name + " in elimination<br>" + era2women[4].pic + era2women[twoRandom].elimPic + "<br>")
                 era2women[twoRandom].chart[0] = "OUT"
                 era2women[twoRandom].placement = 20
                 era2women[twoRandom].eliminatedFirst = True
                 eliminated.append(era2women[twoRandom])
             else:
-                game_output.append(era2women[twoRandom].name + " has beat " + era2women[4].name + " in elimination<br>" + era2women[twoRandom].pic + era2women[4].elimPic + "<br>")
+                results_output.append(era2women[twoRandom].name + " has beat " + era2women[4].name + " in elimination<br>" + era2women[twoRandom].pic + era2women[4].elimPic + "<br>")
                 era2women[4].chart[0] = "OUT"
                 era2women[4].placement = 20
                 era2women[4].eliminatedFirst = True
                 eliminated.append(era2women[4])
             if era3men[4].random > era3men[threeRandom].random:
-                game_output.append(era3men[4].name + " has beat " + era3men[threeRandom].name + " in elimination<br>" + era3men[4].pic + era3men[threeRandom].elimPic + "<br>")
+                results_output.append(era3men[4].name + " has beat " + era3men[threeRandom].name + " in elimination<br>" + era3men[4].pic + era3men[threeRandom].elimPic + "<br>")
                 era3men[threeRandom].chart[0] = "OUT"
                 era3men[threeRandom].placement = 20
                 era3men[threeRandom].eliminatedFirst = True
                 eliminated.append(era3men[threeRandom])
             else:
-                game_output.append(era3men[threeRandom].name + " has beat " + era3men[4].name + " in elimination<br>" + era3men[threeRandom].pic + era3men[4].elimPic + "<br>")
+                results_output.append(era3men[threeRandom].name + " has beat " + era3men[4].name + " in elimination<br>" + era3men[threeRandom].pic + era3men[4].elimPic + "<br>")
                 era3men[4].chart[0] = "OUT"
                 era3men[4].placement = 20
                 era3men[4].eliminatedFirst = True
                 eliminated.append(era3men[4])
             if era3women[4].random > era3women[threeRandom].random:
-                game_output.append(era3women[4].name + " has beat " + era3women[threeRandom].name + " in elimination<br>" + era3women[4].pic + era3women[threeRandom].elimPic + "<br>")
+                results_output.append(era3women[4].name + " has beat " + era3women[threeRandom].name + " in elimination<br>" + era3women[4].pic + era3women[threeRandom].elimPic + "<br>")
                 era3women[threeRandom].chart[0] = "OUT"
                 era3women[threeRandom].placement = 20
                 era3women[threeRandom].eliminatedFirst = True
                 eliminated.append(era3women[threeRandom])
             else:
-                game_output.append(era3women[threeRandom].name + " has beat " + era3women[4].name + " in elimination<br>" + era3women[threeRandom].pic + era3women[4].elimPic + "<br>")
+                results_output.append(era3women[threeRandom].name + " has beat " + era3women[4].name + " in elimination<br>" + era3women[threeRandom].pic + era3women[4].elimPic + "<br>")
                 era3women[4].chart[0] = "OUT"
                 era3women[4].placement = 20
                 era3women[4].eliminatedFirst = True
                 eliminated.append(era3women[4])
             if era4men[4].random > era4men[fourRandom].random:
-                game_output.append(era4men[4].name + " has beat " + era4men[fourRandom].name + " in elimination<br>" + era4men[4].pic + era4men[fourRandom].elimPic + "<br>")
+                results_output.append(era4men[4].name + " has beat " + era4men[fourRandom].name + " in elimination<br>" + era4men[4].pic + era4men[fourRandom].elimPic + "<br>")
                 era4men[fourRandom].chart[0] = "OUT"
                 era4men[fourRandom].placement = 20
                 era4men[fourRandom].eliminatedFirst = True
                 eliminated.append(era4men[fourRandom])
             else:
-                game_output.append(era4men[fourRandom].name + " has beat " + era4men[4].name + " in elimination<br>" + era4men[fourRandom].pic + era4men[4].elimPic + "<br>")
+                results_output.append(era4men[fourRandom].name + " has beat " + era4men[4].name + " in elimination<br>" + era4men[fourRandom].pic + era4men[4].elimPic + "<br>")
                 era4men[4].chart[0] = "OUT"
                 era4men[4].placement = 20
                 era4men[4].eliminatedFirst = True
                 eliminated.append(era4men[4])
             if era4women[4].random > era4women[fourRandom].random:
-                game_output.append(era4women[4].name + " has beat " + era4women[fourRandom].name + " in elimination<br>" + era4women[4].pic + era4women[fourRandom].elimPic + "<br>")
+                results_output.append(era4women[4].name + " has beat " + era4women[fourRandom].name + " in elimination<br>" + era4women[4].pic + era4women[fourRandom].elimPic + "<br>")
                 era4women[fourRandom].chart[0] = "OUT"
                 era4women[fourRandom].placement = 20
                 era4women[fourRandom].eliminatedFirst = True
                 eliminated.append(era4women[fourRandom])
             else:
-                game_output.append(era4women[fourRandom].name + " has beat " + era4women[4].name + " in elimination<br>" + era4women[fourRandom].pic + era4women[4].elimPic + "<br>")
+                results_output.append(era4women[fourRandom].name + " has beat " + era4women[4].name + " in elimination<br>" + era4women[fourRandom].pic + era4women[4].elimPic + "<br>")
                 era4women[4].chart[0] = "OUT"
                 era4women[4].placement = 20
                 era4women[4].eliminatedFirst = True
@@ -364,7 +394,7 @@ def game():
             # Update game results for the round
             round_results = []
             for player in males + females:
-                round_results.append((player, player.chart[index3]))
+                round_results.append((player, player.chart[week-1]))
             game_results.append(round_results)
             index4 = 0
             for male in males:
@@ -399,6 +429,7 @@ def game():
             week += 1
             count2 -= 4
             index3 += 1
+            return game_output, eliminated, game_results,males, females, results_output
         else:
             for i in range(count2):
                 males[i].random = random.randint(1, males[i].skill) + random.randint(1, males[i].skill)
@@ -437,21 +468,21 @@ def game():
             while femaleint == femaleint2:
                 femaleint2 = random.randint(1, 4)
 
-            game_output.append(f"{males[count2-maleint].name}, {males[count2-maleint2].name}, {females[count2-femaleint].name}, {females[count2-femaleint2].name} were sent into elimination<br>" + males[count2-maleint].pic + males[count2-maleint2].pic + " "+ females[count2-femaleint].pic + females[count2-femaleint2].pic + "<br><br>")
-
+            game_output.append(males[count2-maleint].name + " and "  + males[count2-maleint2].name + " were sent into elimination<br>" + males[count2-maleint].pic + males[count2-maleint2].pic +  "<br><br>")
+            game_output.append(females[count2-femaleint].name + " and " + females[count2-femaleint2].name + " were sent into elimination<br>" + females[count2-femaleint].pic + females[count2-femaleint2].pic + "<br><br>")
             males[count2-maleint].random = random.randint(1, males[count2-maleint].skill)
             males[count2-maleint2].random = random.randint(1, males[count2-maleint2].skill)
 
             if males[count2-maleint].random > males[count2-maleint2].random:
-                game_output.append(f"{males[count2-maleint].name} has beat {males[count2-maleint2].name} in the elimination<br>" + males[count2-maleint].pic + males[count2-maleint2].elimPic + "<br>")
-                males[count2-maleint2].chart[index3] = "OUT"
-                males[count2-maleint].chart[index3] = "ELIM"
+                results_output.append(f"{males[count2-maleint].name} has beat {males[count2-maleint2].name} in the elimination<br>" + males[count2-maleint].pic + males[count2-maleint2].elimPic + "<br>")
+                males[count2-maleint2].chart[week-1] = "OUT"
+                males[count2-maleint].chart[week-1] = "ELIM"
                 males[count2-maleint2].placement = count2
                 eliminated.append(males[count2-maleint2])
             else:
-                game_output.append(f"{males[count2-maleint2].name} has beat {males[count2-maleint].name} in the elimination<br>" + males[count2-maleint2].pic + males[count2-maleint].elimPic + "<br>")
-                males[count2-maleint].chart[index3] = "OUT"
-                males[count2-maleint2].chart[index3] = "ELIM"
+                results_output.append(f"{males[count2-maleint2].name} has beat {males[count2-maleint].name} in the elimination<br>" + males[count2-maleint2].pic + males[count2-maleint].elimPic + "<br>")
+                males[count2-maleint].chart[week-1] = "OUT"
+                males[count2-maleint2].chart[week-1] = "ELIM"
                 males[count2-maleint].placement = count2
                 eliminated.append(males[count2-maleint])
 
@@ -459,22 +490,22 @@ def game():
             females[count2-femaleint2].random = random.randint(1, females[count2-femaleint2].skill)
 
             if females[count2-femaleint].random > females[count2-femaleint2].random:
-                game_output.append(f"{females[count2-femaleint].name} has beat {females[count2-femaleint2].name} in the elimination<br>" + females[count2-femaleint].pic + females[count2-femaleint2].elimPic + "<br>")
-                females[count2-femaleint2].chart[index3] = "OUT"
-                females[count2-femaleint].chart[index3] = "ELIM"
+                results_output.append(f"{females[count2-femaleint].name} has beat {females[count2-femaleint2].name} in the elimination<br>" + females[count2-femaleint].pic + females[count2-femaleint2].elimPic + "<br>")
+                females[count2-femaleint2].chart[week-1] = "OUT"
+                females[count2-femaleint].chart[week-1] = "ELIM"
                 females[count2-femaleint2].placement = count2
                 eliminated.append(females[count2-femaleint2])
             else:
-                game_output.append(f"{females[count2-femaleint2].name} has beat {females[count2-femaleint].name} in the elimination<br>" + females[count2-femaleint2].pic + females[count2-femaleint].elimPic + "<br>")
-                females[count2-femaleint].chart[index3] = "OUT"
-                females[count2-femaleint2].chart[index3] = "ELIM"
+                results_output.append(f"{females[count2-femaleint2].name} has beat {females[count2-femaleint].name} in the elimination<br>" + females[count2-femaleint2].pic + females[count2-femaleint].elimPic + "<br>")
+                females[count2-femaleint].chart[week-1] = "OUT"
+                females[count2-femaleint2].chart[week-1] = "ELIM"
                 females[count2-femaleint].placement = count2
                 eliminated.append(females[count2-femaleint])
 
             # Update game results for the round
             round_results = []
             for player in males + females:
-                round_results.append((player, player.chart[index3]))
+                round_results.append((player, player.chart[week-1]))
             game_results.append(round_results)
             if males[count2-maleint].random > males[count2-maleint2].random:
                 del males[count2-maleint2]
@@ -488,6 +519,8 @@ def game():
             count2 -= 1
             index3 += 1
             week += 1
+            
+        
         males = sorted(males, key=operator.attrgetter('era'), reverse=True)
         females = sorted(females, key=operator.attrgetter('era'), reverse=True)
         males.reverse()
@@ -499,14 +532,15 @@ def game():
         for male in females:
             remainingFemales += " " + male.name + " (" + str(male.era) + ") "
         
-        game_output.append("Males Remaining: " + remainingMales + "<br>")
+        results_output.append("Males Remaining: " + remainingMales + "<br>")
         for male in males:
-            game_output.append(male.pic)
-        game_output.append("<br>")
-        game_output.append("Females Remaining: " + remainingFemales + "<br>")
+            results_output.append(male.pic)
+        results_output.append("<br>")
+        results_output.append("Females Remaining: " + remainingFemales + "<br>")
         for male in females:
-            game_output.append(male.pic)
-        game_output.append("<br>")
+            results_output.append(male.pic)
+        results_output.append("<br>")
+        return game_output, eliminated, game_results,males, females, results_output
     index = 0
     while index < 4:
         females[index].random = random.randint(1,females[index].skill) + random.randint(1,females[index].skill)
@@ -551,12 +585,8 @@ def game():
     males[0].chart.append("WINNER")
     round_results = []
     for player in males + females:
-            round_results.append((player, player.chart[index3]))
+            round_results.append((player, player.chart[week-1]))
     game_results.append(round_results)
-    males = [player_1, player_2, player_3, player_4, player_5, player_6, player_7, player_8, player_9, player_10,
-         player_11, player_12, player_13, player_14, player_15, player_16, player_17, player_18, player_19, player_20]
-    females = [player_21, player_22, player_23, player_24, player_25, player_26, player_27, player_28, player_29, player_30,
-           player_31, player_32, player_33, player_34, player_35, player_36, player_37, player_38, player_39, player_40]
-    eliminated = sorted(eliminated, key=operator.attrgetter('placement'))
 
-    return game_output, eliminated, game_results,males, females
+    results_output = []
+    return game_output, eliminated, game_results,males, females, results_output
