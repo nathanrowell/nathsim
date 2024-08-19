@@ -1,14 +1,16 @@
-from flask import Flask, render_template_string, redirect, url_for, request
+import json
+from flask import Flask, render_template_string, redirect, url_for, request, jsonify
 from dataclasses import dataclass
 import random
+from TC40 import TC40cast
 from TC40 import game
+from TC40 import convert_players_to_dict
 from traitors import traitors
 from traitors1 import traitors1sim
 from mole2sim import mole2
 from mole1sim import mole1
 
 app = Flask(__name__)
-
 @app.route('/')
 def index():
     return render_template_string('''
@@ -148,8 +150,16 @@ def index():
                 <div class="container">
                     <div class="button-container">
                         <h2>Challenge Seasons</h2>
-
-                        <form action="{{ url_for('TheChallenge40') }}" method="post">
+                        <form action="{{ url_for('TheChallengeCustom') }}" method="post">
+                            <button type="submit">The Challenge Custom</button>
+                        </form>
+                        <form id="challengeForm" action="{{ url_for('TheChallenge40') }}" method="post">
+                            <input type="hidden" name="game_output" id="game_output" value=[]>
+                            <input type="hidden" name="eliminated" id="eliminated" value=[]>
+                            <input type="hidden" name="game_results" id="game_results" value=[]>
+                            <input type="hidden" name="week" id="week" value="1">
+                            <input type="hidden" name="males" id="males" value=[]>
+                            <input type="hidden" name="females" id="females" value=[]>
                             <button type="submit">The Challenge 40</button>
                         </form>
                     </div>
@@ -190,34 +200,93 @@ def index():
         </html>
     ''')
 
+@app.route('/TheChallengeCustom', methods=['POST'])
+def TheChallengeCustom():
+    return render_template_string('''<title>The Challenge 40 Simulator Results</title>''')
 
 @app.route('/TheChallenge40', methods=['POST'])
 def TheChallenge40():
-    game_output, eliminated, game_results, males, females = game()
-    
-    game_output_display = '\n'.join(game_output)
-    
-    num_rounds = len(game_results)
-    
-    # Initialize player results
-    player_results = {player.name: [''] * num_rounds for player in males + females}
-    
-    # Populate player results
-    for round_num, round_results in enumerate(game_results):
-        for player, result in round_results:
-            if player.name in player_results:
-                player_results[player.name][round_num] = result
+    @dataclass
+    class Player:
+        name: str
+        skill: int
+        random: int
+        gender: str
+        chart: list
+        placement: int
+        era: int
+        eliminatedFirst: bool
+        pic: str
+        elimPic: str
 
-    # Sort player results by placement
-    sorted_player_results = sorted(
-        [(player, player_results[player.name]) for player in males + females],
-        key=lambda x: x[0].placement
-    )
+        def to_dict(self):
+            return {
+                'name': self.name,
+                'skill': self.skill,
+                'random': self.random,
+                'gender': self.gender,
+                'chart': self.chart,
+                'placement': self.placement,
+                'era': self.era,
+                'eliminatedFirst': self.eliminatedFirst,
+                'pic': self.pic,
+                'elimPic': self.elimPic
+            }
+
+        @staticmethod
+        def from_dict(data):
+            return Player(
+                name=data['name'],
+                skill=data['skill'],
+                random=data['random'],
+                gender=data['gender'],
+                chart=data['chart'],
+                placement=data['placement'],
+                era=data['era'],
+                eliminatedFirst=data['eliminatedFirst'],
+                pic=data['pic'],
+                elimPic=data['elimPic']
+            )
+    def parse_json_list(key):
+        json_str = request.form.get(key, '[]')
+        try:
+            return json.loads(json_str)
+        except json.JSONDecodeError:
+            return []
+
+    # Access form data
+    game_output = parse_json_list('game_output')
+    eliminated = parse_json_list('eliminated')
+    week = int(request.form.get('week', 1))
+    males = parse_json_list('males')
+    females = parse_json_list('females')
+    game_results = []
+    # Reconstruct the original format
     
-    player_results = {player.name: results for player, results in sorted_player_results}
+    # Initialize males and females if week is 1
+    if week == 1:
+        males, females = TC40cast()
+    else:
+        males = [Player.from_dict(player_dict) for player_dict in males]
+        females = [Player.from_dict(player_dict) for player_dict in females]
+        eliminated = [Player.from_dict(player_dict) for player_dict in eliminated]
+    results_output = []
+    # Update game state
+    game_output, eliminated_cur, game_results, males, females, results_output = game(game_output, eliminated, game_results, males, females, week)
+    week += 1
+
+    game_output_display = '\n'.join(game_output)
+    # Generate player results
+
+    males_json = json.dumps([p.to_dict() for p in males])
+    females_json = json.dumps([p.to_dict() for p in females])
+    eliminated_json = json.dumps([p.to_dict() for p in eliminated])
+    results_json = json.dumps(results_output)
+
+    
 
     return render_template_string('''
-        <!DOCTYPE html>
+       <!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
@@ -312,10 +381,24 @@ def TheChallenge40():
                 td {
                     background-color: #f5f5f5; /* Very light gray */
                 }
-                .result-cell {
-                    text-align: center;
-                    font-size: 18px;
-                    text-shadow: 1px 1px 3px #000000; /* Added text shadow */
+
+
+                .continue-button {background-color: #93C4E0;
+                    
+                    color: black;
+                    border: orange;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                                  padding: 5px 10px;
+                }
+                .continue-button:hover {
+                    background-color: #7aa3b4; /* Slightly darker blue on hover */
+                    transform: scale(1.05); /* Slightly increase size on hover */
+                }
+
+                .continue-button:active {
+                    background-color: #5a8db7; /* Even darker blue when clicked */
                 }
 
                 .back-button {
@@ -327,6 +410,7 @@ def TheChallenge40():
                     cursor: pointer;
                     transition: background-color 0.3s;
                                   padding: 5px 10px;
+                    
                 }
                                   
                 .resimulate-button {background-color: white;
@@ -347,12 +431,382 @@ def TheChallenge40():
                 }
             </style>
         </head>
+        <body>               
+            <header>
+                <div class="header-title">nathsim.com</div>
+                <div class="center-title">The Challenge 40 Simulator</div>
+                <div class="header-buttons">
+                    <form id="challengeForm" action="{{ url_for('TheChallenge40Results') }}" method="post">
+                        <input type="hidden" name="game_output" id="game_output" value="[]">
+                        <input type="hidden" name="eliminated" id="eliminated" value="{{eliminated_json}}">
+                        <input type="hidden" name="game_results" id="game_results" value="[]">
+                        <input type="hidden" name="week" id="week" value="{{ week }}">
+                        <input type="hidden" name="males" id="males" value="{{ males_json }}">
+                        <input type="hidden" name="females" id="females" value="{{ females_json }}">
+                        <input type="hidden" name="results" id="results" value="{{ results_json }}">
+                        <button type="submit" class="continue-button" >Continue</button>
+                    </form>
+                    <a href="{{ url_for('index') }}" style="text-decoration: none;">
+                        <button class="back-button">Back to Home</button>
+                    </a>
+                    <form action="{{ url_for('TheChallenge40') }}" method="post" style="display: inline;">
+                        <button class="resimulate-button" type="submit">Resimulate</button>
+                    </form>
+                    
+                </div>
+            </header>
+            <main>
+                
+                <p>{{ game_output_display | safe }}</p>
+                <div style="overflow-x: auto;">
+                    
+                    
+                </div>
+                <form id="challengeForm" action="{{ url_for('TheChallenge40Results') }}" method="post">
+                    <input type="hidden" name="game_output" id="game_output" value="[]">
+                    <input type="hidden" name="eliminated" id="eliminated" value="{{eliminated_json}}">
+                    <input type="hidden" name="game_results" id="game_results" value="[]">
+                    <input type="hidden" name="week" id="week" value="{{ week }}">
+                    <input type="hidden" name="males" id="males" value="{{ males_json }}">
+                    <input type="hidden" name="females" id="females" value="{{ females_json }}">
+                    <input type="hidden" name="results" id="results" value="{{ results_json }}">
+                    <button type="submit" class="continue-button" >Continue</button>
+                </form>
+            </main>
+            <footer>
+                <a href="{{ url_for('index') }}" style="text-decoration: none;">
+                    <button class="back-button">Back to Home</button>
+                </a>
+                <form action="{{ url_for('TheChallenge40') }}" method="post" style="display: inline;">
+                    <button class="resimulate-button" type="submit">Resimulate</button>
+                </form>
+            </footer>
+        </body>
+        </html>
+    ''', game_output_display=game_output_display,males_json=males_json, females_json=females_json, week = week,eliminated_json=eliminated_json, results_json = results_json)
+
+@app.route('/TheChallenge40Results', methods=['POST'])
+def TheChallenge40Results():
+    @dataclass
+    class Player:
+        name: str
+        skill: int
+        random: int
+        gender: str
+        chart: list
+        placement: int
+        era: int
+        eliminatedFirst: bool
+        pic: str
+        elimPic: str
+
+        def to_dict(self):
+            return {
+                'name': self.name,
+                'skill': self.skill,
+                'random': self.random,
+                'gender': self.gender,
+                'chart': self.chart,
+                'placement': self.placement,
+                'era': self.era,
+                'eliminatedFirst': self.eliminatedFirst,
+                'pic': self.pic,
+                'elimPic': self.elimPic
+            }
+
+        @staticmethod
+        def from_dict(data):
+            return Player(
+                name=data['name'],
+                skill=data['skill'],
+                random=data['random'],
+                gender=data['gender'],
+                chart=data['chart'],
+                placement=data['placement'],
+                era=data['era'],
+                eliminatedFirst=data['eliminatedFirst'],
+                pic=data['pic'],
+                elimPic=data['elimPic']
+            )
+    def parse_json_list(key):
+        json_str = request.form.get(key, '[]')
+        try:
+            return json.loads(json_str)
+        except json.JSONDecodeError:
+            return []
+
+    # Access form data
+    eliminated = parse_json_list('eliminated')
+    game_results = []
+    results = parse_json_list('results')
+    week = int(request.form.get('week', 1))
+    males = parse_json_list('males')
+    females = parse_json_list('females')
+    def dict_to_player(data):
+        return Player(
+            name=data['name'],
+            skill=data['skill'],
+            random=data['random'],
+            gender=data['gender'],
+            chart=data['chart'],
+            placement=data['placement'],
+            era=data['era'],
+            eliminatedFirst=data['eliminatedFirst'],
+            pic=data['pic'],
+            elimPic=data['elimPic']
+        )
+
+    # Reconstruct the original format
+    
+    # Initialize males and females if week is 1
+    if week == 1:
+        males, females = TC40cast()
+    else:
+        males = [Player.from_dict(player_dict) for player_dict in males]
+        females = [Player.from_dict(player_dict) for player_dict in females]
+        eliminated = [Player.from_dict(player_dict) for player_dict in eliminated]
+        
+    # Update game state
+
+    game_output_display = '\n'.join(results)
+    # Generate player results
+    num_rounds = week-1
+    
+    all_players = males + females + eliminated
+
+        # Initialize player_results with empty results lists
+    player_results = {player.name: [''] * num_rounds for player in all_players}
+
+    # Update player_results with the chart field for each player
+    for player in all_players:
+        # Extend the chart list with empty strings if it's shorter than num_rounds
+        player_results[player.name] = player.chart + [''] * (num_rounds - len(player.chart))
+
+    # Sort player_results by player placement
+    sorted_player_results = sorted(
+        [(player, player_results[player.name]) for player in all_players],
+        key=lambda x: x[0].placement
+    )
+
+    # Reconstruct player_results dictionary
+    player_results = {player.name: results for player, results in sorted_player_results}
+
+    males_json = json.dumps([p.to_dict() for p in males])
+    females_json = json.dumps([p.to_dict() for p in females])
+    eliminated_json = json.dumps([p.to_dict() for p in eliminated])
+
+
+    
+
+    return render_template_string('''
+       <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>The Challenge 40 Simulator Results</title>
+            <style>
+                body {
+                    background-color: #2c3e50;
+                    color: white;
+                    margin: 0;
+                    padding: 0;
+                    font-family: 'Roboto', sans-serif;
+                    text-shadow: 2px 2px 4px #000000;
+                }
+                header {
+    background: linear-gradient(135deg, #1fd655, #16c43c);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: calc(100% - 1px);
+    z-index: 1000;
+    box-sizing: border-box;
+    font-weight: bold;
+}
+
+.header-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 10px;
+    }
+    
+    .header-title {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 5px 10px;
+    }
+    
+    .header-title {
+        font-size: 16px;
+    }
+}
+                .center-title {
+    text-align: center;
+    flex-grow: 1;
+    font-size: 20px; /* Adjusted font size */
+    margin: 0;
+    padding-left: 60px; /* Reduced padding */
+}
+
+.header-buttons {
+    display: flex;
+    gap: 8px; /* Reduced gap */
+}
+
+main {
+    margin-top: 60px; /* Reduced top margin */
+    text-align: center;
+}
+
+table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 14px; /* Reduced font size for overall smaller table */
+    max-width: 90%; /* Limits the width of the table to 90% of its container */
+    overflow-x: auto; /* Adds horizontal scroll if needed */
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    padding: 6px; /* Reduced padding for compactness */
+}
+
+th {
+    background-color: #72aee6;
+    color: white;
+    font-size: 16px; /* Reduced font size for headers */
+}
+
+td.name-column {
+    text-align: left;
+    background-color: ghostwhite;
+    width: 80px; /* Reduced width */
+}
+
+td {
+    background-color: #f5f5f5; /* Very light gray */
+}
+
+.continue-button {
+    border: 1px solid #4a7b8c;
+    background-color: #93C4E0;
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 4px 8px; /* Reduced padding for smaller button */
+    font-size: 14px; /* Smaller font size for button */
+}
+
+.continue-button:hover {
+    background-color: #7aa3b4; /* Slightly darker blue on hover */
+    transform: scale(1.05); /* Slightly increase size on hover */
+}
+
+.continue-button:active {
+    background-color: #5a8db7; /* Even darker blue when clicked */
+}
+
+.result-cell {
+    text-align: center;
+    font-size: 14px; /* Reduced font size */
+    text-shadow: 1px 1px 2px #000000; /* Reduced text shadow */
+    line-height: 20px; /* Adjusted line-height for better text centering */
+    overflow: hidden; /* Ensure text does not overflow */
+}
+
+.back-button {
+    border: 1px solid #4a7b8c;
+    background-color: darkgreen;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 4px 8px; /* Reduced padding for smaller button */
+    font-size: 14px; /* Smaller font size for button */
+}
+
+.resimulate-button {
+    border: 1px solid #4a7b8c;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 4px 8px; /* Reduced padding for smaller button */
+    font-size: 14px; /* Smaller font size for button */
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+footer {
+    text-align: center;
+    margin: 20px;
+}
+                                  .game-output-container {
+                                    width: 90%; /* Set container width to 90% of the viewport */
+                                    margin: 0 auto; /* Center the container */
+                                    overflow-x: auto; /* Add horizontal scroll if content overflows */
+                                    padding: 10px; /* Optional: Add padding */
+                                }
+
+                                .game-output-content {
+                                    width: 100%; /* Ensure content takes full width of the container */
+                                    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+                                }
+            </style>
+            <script>
+            // Function to check if results are empty and disable the button
+            function toggleContinueButton() {
+                var results = {{ results | tojson}};
+                var continueButton = document.getElementById('continueButton');
+                if (results.length === 0) {
+                    continueButton.disabled = true;
+                    continueButton.style.cursor = 'not-allowed'; // Optional: change cursor to indicate disabled state
+                } else {
+                    continueButton.disabled = false;
+                    continueButton.style.cursor = 'pointer'; // Reset cursor style
+                }
+            }
+
+            // Call the function when the page loads
+            window.onload = toggleContinueButton;
+        </script>
+        </head>
         <body>
                                   
             <header>
                 <div class="header-title">nathsim.com</div>
                 <div class="center-title">The Challenge 40 Simulator</div>
                 <div class="header-buttons">
+                    <form id="challengeForm" action="{{ url_for('TheChallenge40') }}" method="post">
+                    <input type="hidden" name="game_output" id="game_output" value="[]">
+                    <input type="hidden" name="eliminated" id="eliminated" value="{{eliminated_json}}">
+                    <input type="hidden" name="game_results" id="game_results" value="[]">
+                    <input type="hidden" name="week" id="week" value="{{ week }}">
+                    <input type="hidden" name="males" id="males" value="{{ males_json }}">
+                    <input type="hidden" name="females" id="females" value="{{ females_json }}">
+                    <button type="submit" id="continueButton" class="continue-button">Continue</button>
+                </form>
                     <a href="{{ url_for('index') }}" style="text-decoration: none;">
                         <button class="back-button">Back to Home</button>
                     </a>
@@ -362,9 +816,14 @@ def TheChallenge40():
                 </div>
             </header>
             <main>
-                <p>{{ game_output_display | safe }}</p>
+                
+                <div class="game-output-container">
+                    <div class="game-output-content">
+                        <p>{{ game_output_display | safe }}</p>
+                    </div>
+                </div>
                 <h1 style="font-size: 2em; text-shadow: 1px 1px 3px #000000;">Results Chart</h1>
-                <div style="overflow-x: auto;">
+                
                     <table>
                         <tr>
                             <th class="round-header">Round</th>
@@ -397,7 +856,17 @@ def TheChallenge40():
                             </tr>
                         {% endfor %}
                     </table>
+                    
                 </div>
+                <form id="challengeForm" action="{{ url_for('TheChallenge40') }}" method="post">
+                    <input type="hidden" name="game_output" id="game_output" value="[]">
+                    <input type="hidden" name="eliminated" id="eliminated" value="{{eliminated_json}}">
+                    <input type="hidden" name="game_results" id="game_results" value="[]">
+                    <input type="hidden" name="week" id="week" value="{{ week }}">
+                    <input type="hidden" name="males" id="males" value="{{ males_json }}">
+                    <input type="hidden" name="females" id="females" value="{{ females_json }}">
+                    <button type="submit" id="continueButton" class="continue-button">Continue</button>
+                </form>
             </main>
             <footer>
                 <a href="{{ url_for('index') }}" style="text-decoration: none;">
@@ -409,7 +878,8 @@ def TheChallenge40():
             </footer>
         </body>
         </html>
-    ''', player_results=player_results, num_rounds=num_rounds, game_output_display=game_output_display)
+    ''', player_results=player_results, num_rounds=num_rounds, game_output_display=game_output_display,males_json=males_json, females_json=females_json, week = week,eliminated_json=eliminated_json, results=results)
+
 
 @app.route('/traitors2', methods=['POST'])
 def traitors2():
