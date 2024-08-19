@@ -647,33 +647,15 @@ def TheChallenge40Results():
     font-weight: bold;
     font-size: 20px;
     margin: 0;
+    text-align: center; /* Center the title */
 }
 
-@media (max-width: 768px) {
-    header {
-        padding: 10px;
-    }
-    
-    .header-title {
-        font-size: 18px;
-    }
-}
-
-@media (max-width: 480px) {
-    header {
-        padding: 5px 10px;
-    }
-    
-    .header-title {
-        font-size: 16px;
-    }
-}
-                .center-title {
+.center-title {
     text-align: center;
     flex-grow: 1;
     font-size: 20px; /* Adjusted font size */
     margin: 0;
-    padding-left: 60px; /* Reduced padding */
+    padding-left: 20px; /* Reduced padding for smaller screens */
 }
 
 .header-buttons {
@@ -681,6 +663,35 @@ def TheChallenge40Results():
     gap: 8px; /* Reduced gap */
 }
 
+@media (max-width: 768px) {
+    header {
+        padding: 8px 15px; /* Adjusted padding for tablets */
+    }
+    
+    .header-title {
+        font-size: 18px; /* Slightly smaller font size for tablets */
+    }
+
+    .center-title {
+        font-size: 18px; /* Slightly smaller font size for tablets */
+        padding-left: 15px; /* Reduced padding */
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 5px 10px; /* Reduced padding for mobile devices */
+    }
+    
+    .header-title {
+        font-size: 16px; /* Smaller font size for mobile devices */
+    }
+
+    .center-title {
+        font-size: 16px; /* Smaller font size for mobile devices */
+        padding-left: 10px; /* Reduced padding */
+    }
+}
 main {
     margin-top: 60px; /* Reduced top margin */
     text-align: center;
