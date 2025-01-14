@@ -1,8 +1,6 @@
-from flask import Flask, render_template_string, redirect, url_for
 from dataclasses import dataclass
 import operator
 import random
-import colorama
 from colorama import Fore, Back, Style
 
 def convert_players_to_dict(players):
@@ -51,125 +49,125 @@ def TC40cast():
                 pic=data['pic'],
                 elimPic=data['elimPic']
             )
-    player_1 = Player('Derrick', 80, 0, 'M', [], 0, 1, False, 
-                  '<img src="https://live.staticflickr.com/65535/53914826951_132f681c41_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_1 = Player('Derrick', 80, 0, 'M', [], 0, 1, False,
+                  '<img src="https://live.staticflickr.com/65535/53914826951_132f681c41_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53914826951_132f681c41_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_2 = Player('Mark', 60, 0, 'M', [], 0, 1, False, 
-                 '<img src="https://live.staticflickr.com/65535/53913941667_3d2660ee6d_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_2 = Player('Mark', 60, 0, 'M', [], 0, 1, False,
+                 '<img src="https://live.staticflickr.com/65535/53913941667_3d2660ee6d_m.jpg" alt="Game Image" width="120" height="120" />',
                  '<img src="https://live.staticflickr.com/65535/53913941667_3d2660ee6d_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_3 = Player('CT', 90, 0, 'M', [], 0, 1, False, 
-                 '<img src="https://live.staticflickr.com/65535/53913941762_26db92626d_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_3 = Player('CT', 90, 0, 'M', [], 0, 1, False,
+                 '<img src="https://live.staticflickr.com/65535/53913941762_26db92626d_m.jpg" alt="Game Image" width="120" height="120" />',
                  '<img src="https://live.staticflickr.com/65535/53913941762_26db92626d_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_4 = Player('Brad', 80, 0, 'M', [], 0, 1, False, 
-                 '<img src="https://live.staticflickr.com/65535/53915074283_0700298b2d_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_4 = Player('Brad', 80, 0, 'M', [], 0, 1, False,
+                 '<img src="https://live.staticflickr.com/65535/53915074283_0700298b2d_m.jpg" alt="Game Image" width="120" height="120" />',
                  '<img src="https://live.staticflickr.com/65535/53915074283_0700298b2d_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_5 = Player('Darrell', 80, 0, 'M', [], 0, 1, False, 
-                 '<img src="https://live.staticflickr.com/65535/53915177519_8b1f00300a_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_5 = Player('Darrell', 80, 0, 'M', [], 0, 1, False,
+                 '<img src="https://live.staticflickr.com/65535/53915177519_8b1f00300a_m.jpg" alt="Game Image" width="120" height="120" />',
                  '<img src="https://live.staticflickr.com/65535/53915177519_8b1f00300a_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_6 = Player('Brandon', 60, 0, 'M', [], 0, 2, False, 
-                 '<img src="https://live.staticflickr.com/65535/53915276930_6b866566d2_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_6 = Player('Brandon', 60, 0, 'M', [], 0, 2, False,
+                 '<img src="https://live.staticflickr.com/65535/53915276930_6b866566d2_m.jpg" alt="Game Image" width="120" height="120" />',
                  '<img src="https://live.staticflickr.com/65535/53915276930_6b866566d2_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_7 = Player('Nehemiah', 60, 0, 'M', [], 0, 2, False, 
-                 '<img src="https://live.staticflickr.com/65535/53915177454_4281b8f90d_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_7 = Player('Nehemiah', 60, 0, 'M', [], 0, 2, False,
+                 '<img src="https://live.staticflickr.com/65535/53915177454_4281b8f90d_m.jpg" alt="Game Image" width="120" height="120" />',
                  '<img src="https://live.staticflickr.com/65535/53915177454_4281b8f90d_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_8 = Player('Bananas', 90, 0, 'M', [], 0, 2, False, 
-                 '<img src="https://live.staticflickr.com/65535/53914826971_a80f63b477_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_8 = Player('Bananas', 90, 0, 'M', [], 0, 2, False,
+                 '<img src="https://live.staticflickr.com/65535/53914826971_a80f63b477_m.jpg" alt="Game Image" width="120" height="120" />',
                  '<img src="https://live.staticflickr.com/65535/53914826971_a80f63b477_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_9 = Player('Derek', 70, 0, 'M', [], 0, 2, False, 
-                 '<img src="https://live.staticflickr.com/65535/53915276905_06df120bf1_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_9 = Player('Derek', 70, 0, 'M', [], 0, 2, False,
+                 '<img src="https://live.staticflickr.com/65535/53915276905_06df120bf1_m.jpg" alt="Game Image" width="120" height="120" />',
                  '<img src="https://live.staticflickr.com/65535/53915276905_06df120bf1_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_10 = Player('Ryan', 50, 0, 'M', [], 0, 2, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915177424_0e2ba6f595_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_10 = Player('Ryan', 50, 0, 'M', [], 0, 2, False,
+                  '<img src="https://live.staticflickr.com/65535/53915177424_0e2ba6f595_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915177424_0e2ba6f595_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_11 = Player('Cory', 70, 0, 'M', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53914826961_d0e9522513_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_11 = Player('Cory', 70, 0, 'M', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53914826961_d0e9522513_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53914826961_d0e9522513_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_12 = Player('Devin', 80, 0, 'M', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53913941747_65f0d9931a_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_12 = Player('Devin', 80, 0, 'M', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53913941747_65f0d9931a_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53913941747_65f0d9931a_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_13 = Player('Jordan', 90, 0, 'M', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53914826926_f5254b2911_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_13 = Player('Jordan', 90, 0, 'M', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53914826926_f5254b2911_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53914826926_f5254b2911_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_14 = Player('Leroy', 80, 0, 'M', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915177479_70a18e73ea_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_14 = Player('Leroy', 80, 0, 'M', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53915177479_70a18e73ea_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915177479_70a18e73ea_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_15 = Player('Tony', 60, 0, 'M', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915276820_7f6199bab6_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_15 = Player('Tony', 60, 0, 'M', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53915276820_7f6199bab6_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915276820_7f6199bab6_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_16 = Player('Horacio', 70, 0, 'M', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915074268_742747cb23_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_16 = Player('Horacio', 70, 0, 'M', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53915074268_742747cb23_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915074268_742747cb23_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_17 = Player('Josh', 50, 0, 'M', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915276880_7432ffa775_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_17 = Player('Josh', 50, 0, 'M', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53915276880_7432ffa775_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915276880_7432ffa775_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_18 = Player('Kyland', 70, 0, 'M', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915074223_92ab9e7f4d_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_18 = Player('Kyland', 70, 0, 'M', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53915074223_92ab9e7f4d_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915074223_92ab9e7f4d_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_19 = Player('Paulie', 70, 0, 'M', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915177449_35fec241a3_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_19 = Player('Paulie', 70, 0, 'M', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53915177449_35fec241a3_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915177449_35fec241a3_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_20 = Player('Theo', 70, 0, 'M', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915276815_b85c5216d7_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_20 = Player('Theo', 70, 0, 'M', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53915276815_b85c5216d7_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915276815_b85c5216d7_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_21 = Player('Rachel', 90, 0, 'F', [], 0, 1, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915177444_1557dbc24c_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_21 = Player('Rachel', 90, 0, 'F', [], 0, 1, False,
+                  '<img src="https://live.staticflickr.com/65535/53915177444_1557dbc24c_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915177444_1557dbc24c_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_22 = Player('Jodi', 70, 0, 'F', [], 0, 1, False, 
-                  '<img src="https://live.staticflickr.com/65535/53914826946_611e719439_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_22 = Player('Jodi', 70, 0, 'F', [], 0, 1, False,
+                  '<img src="https://live.staticflickr.com/65535/53914826946_611e719439_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53914826946_611e719439_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_23 = Player('Katie', 50, 0, 'F', [], 0, 1, False, 
-                  '<img src="https://live.staticflickr.com/65535/53913941707_6fc59b419a_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_23 = Player('Katie', 50, 0, 'F', [], 0, 1, False,
+                  '<img src="https://live.staticflickr.com/65535/53913941707_6fc59b419a_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53913941707_6fc59b419a_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_24 = Player('Aneesa', 60, 0, 'F', [], 0, 1, False, 
-                  '<img src="https://live.staticflickr.com/65535/53913941797_c3cb8ea3ef_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_24 = Player('Aneesa', 60, 0, 'F', [], 0, 1, False,
+                  '<img src="https://live.staticflickr.com/65535/53913941797_c3cb8ea3ef_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53913941797_c3cb8ea3ef_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_25 = Player('Tina', 60, 0, 'F', [], 0, 1, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915177409_4b765c2d35_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_25 = Player('Tina', 60, 0, 'F', [], 0, 1, False,
+                  '<img src="https://live.staticflickr.com/65535/53915177409_4b765c2d35_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915177409_4b765c2d35_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_26 = Player('Kellyanne', 70, 0, 'F', [], 0, 2, False, 
-                  '<img src="https://live.staticflickr.com/65535/53913941692_eac36dcfe8_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_26 = Player('Kellyanne', 70, 0, 'F', [], 0, 2, False,
+                  '<img src="https://live.staticflickr.com/65535/53913941692_eac36dcfe8_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53913941692_eac36dcfe8_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_27 = Player('Emily', 80, 0, 'F', [], 0, 2, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915074263_ab79c4b40e_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_27 = Player('Emily', 80, 0, 'F', [], 0, 2, False,
+                  '<img src="https://live.staticflickr.com/65535/53915074263_ab79c4b40e_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915074263_ab79c4b40e_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_28 = Player('Cara Maria', 80, 0, 'F', [], 0, 2, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915276935_75703ef236_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_28 = Player('Cara Maria', 80, 0, 'F', [], 0, 2, False,
+                  '<img src="https://live.staticflickr.com/65535/53915276935_75703ef236_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915276935_75703ef236_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_29 = Player('Aviv', 60, 0, 'F', [], 0, 2, False, 
-                  '<img src="https://live.staticflickr.com/65535/53914826981_16e856e3a0_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_29 = Player('Aviv', 60, 0, 'F', [], 0, 2, False,
+                  '<img src="https://live.staticflickr.com/65535/53914826981_16e856e3a0_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53914826981_16e856e3a0_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_30 = Player('Laurel', 80, 0, 'F', [], 0, 2, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915177484_6d8ca27f5d_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_30 = Player('Laurel', 80, 0, 'F', [], 0, 2, False,
+                  '<img src="https://live.staticflickr.com/65535/53915177484_6d8ca27f5d_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915177484_6d8ca27f5d_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_31 = Player('Amanda', 50, 0, 'F', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915074293_52530116a4_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_31 = Player('Amanda', 50, 0, 'F', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53915074293_52530116a4_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915074293_52530116a4_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_32 = Player('Averey', 60, 0, 'F', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53913941792_91062239ed_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_32 = Player('Averey', 60, 0, 'F', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53913941792_91062239ed_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53913941792_91062239ed_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_33 = Player('Jonna', 70, 0, 'F', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53913941722_255d7eccdf_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_33 = Player('Jonna', 70, 0, 'F', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53913941722_255d7eccdf_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53913941722_255d7eccdf_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_34 = Player('Nia', 60, 0, 'F', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915074188_ee54662032_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_34 = Player('Nia', 60, 0, 'F', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53915074188_ee54662032_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915074188_ee54662032_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_35 = Player('Tori', 70, 0, 'F', [], 0, 3, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915276805_1987e3b741_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_35 = Player('Tori', 70, 0, 'F', [], 0, 3, False,
+                  '<img src="https://live.staticflickr.com/65535/53915276805_1987e3b741_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915276805_1987e3b741_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_36 = Player('Jenny', 80, 0, 'F', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915177509_d499d052f6_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_36 = Player('Jenny', 80, 0, 'F', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53915177509_d499d052f6_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915177509_d499d052f6_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_37 = Player('Kaycee', 80, 0, 'F', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53913941697_e1272a6617_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_37 = Player('Kaycee', 80, 0, 'F', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53913941697_e1272a6617_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53913941697_e1272a6617_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_38 = Player('Michele', 70, 0, 'F', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53914826891_3e4cef76a5_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_38 = Player('Michele', 70, 0, 'F', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53914826891_3e4cef76a5_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53914826891_3e4cef76a5_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_39 = Player('Nurys', 70, 0, 'F', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915074193_60ca2dd741_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_39 = Player('Nurys', 70, 0, 'F', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53915074193_60ca2dd741_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915074193_60ca2dd741_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
-    player_40 = Player('Olivia', 70, 0, 'F', [], 0, 4, False, 
-                  '<img src="https://live.staticflickr.com/65535/53915074178_90a5ef302f_m.jpg" alt="Game Image" width="120" height="120" />', 
+    player_40 = Player('Olivia', 70, 0, 'F', [], 0, 4, False,
+                  '<img src="https://live.staticflickr.com/65535/53915074178_90a5ef302f_m.jpg" alt="Game Image" width="120" height="120" />',
                   '<img src="https://live.staticflickr.com/65535/53915074178_90a5ef302f_m.jpg" alt="Game Image" width="120" height="120" style="filter: grayscale(100%);" />')
     males = [player_1, player_2, player_3, player_4, player_5, player_6, player_7, player_8, player_9, player_10,
          player_11, player_12, player_13, player_14, player_15, player_16, player_17, player_18, player_19, player_20]
@@ -185,7 +183,7 @@ def TC40cast():
         male.placement = 0
     return males , females
 
-def game(game_output, eliminated, game_results, males, females,week):
+def TC40Simulation(game_output, eliminated, game_results, males, females,week):
     era1men = []
     count = len(females)
     count2 = count
@@ -200,10 +198,10 @@ def game(game_output, eliminated, game_results, males, females,week):
     results_output = []
     results_output.append("<h1>Elimination Results</h1>")
     game_output.append("<h2>")
-    
+
     while count2 > 4:
         game_output.append(f"</h1><br><h2>Week {week}</h1><br><div1>")
-        if week == 1:  
+        if week == 1:
             for i in range(count2):
                 males[i].random = random.randint(1, males[i].skill) + random.randint(1, males[i].skill)
                 females[i].random = random.randint(1, females[i].skill) + random.randint(1, females[i].skill)
@@ -301,7 +299,7 @@ def game(game_output, eliminated, game_results, males, females,week):
                 era1men[4].eliminatedFirst = True
                 eliminated.append(era1men[4])
 
-                
+
             if era1women[4].random > era1women[oneRandom].random:
                 results_output.append(era1women[4].name + " has beat " + era1women[oneRandom].name + " in elimination<br>" + era1women[4].pic + era1women[oneRandom].elimPic + "<br>")
                 era1women[oneRandom].chart[0] = "OUT"
@@ -388,8 +386,8 @@ def game(game_output, eliminated, game_results, males, females,week):
                 era4women[4].placement = 20
                 era4women[4].eliminatedFirst = True
                 eliminated.append(era4women[4])
-            
-                
+
+
 
             # Update game results for the round
             round_results = []
@@ -434,7 +432,7 @@ def game(game_output, eliminated, game_results, males, females,week):
             for i in range(count2):
                 males[i].random = random.randint(1, males[i].skill) + random.randint(1, males[i].skill)
                 females[i].random = random.randint(1, females[i].skill) + random.randint(1, females[i].skill)
-        
+
             males = sorted(males, key=operator.attrgetter('random'), reverse=True)
             females = sorted(females, key=operator.attrgetter('random'), reverse=True)
 
@@ -462,7 +460,7 @@ def game(game_output, eliminated, game_results, males, females,week):
             maleint2 = random.randint(1, 4)
             while maleint == maleint2:
                 maleint2 = random.randint(1, 4)
-        
+
             femaleint = random.randint(1, 4)
             femaleint2 = random.randint(1, 4)
             while femaleint == femaleint2:
@@ -519,8 +517,8 @@ def game(game_output, eliminated, game_results, males, females,week):
             count2 -= 1
             index3 += 1
             week += 1
-            
-        
+
+
         males = sorted(males, key=operator.attrgetter('era'), reverse=True)
         females = sorted(females, key=operator.attrgetter('era'), reverse=True)
         males.reverse()
@@ -531,7 +529,7 @@ def game(game_output, eliminated, game_results, males, females,week):
             remainingMales += " " + male.name + " (" + str(male.era) + ") "
         for male in females:
             remainingFemales += " " + male.name + " (" + str(male.era) + ") "
-        
+
         results_output.append("Males Remaining: " + remainingMales + "<br>")
         for male in males:
             results_output.append(male.pic)
